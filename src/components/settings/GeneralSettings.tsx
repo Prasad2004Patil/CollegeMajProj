@@ -1,5 +1,7 @@
 
 import { useState } from "react";
+import { useTheme } from "next-themes";
+import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -9,11 +11,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator";
 
 export const GeneralSettings = () => {
-  const [email, setEmail] = useState("admin@shieldbrain.ai");
-  const [username, setUsername] = useState("securityadmin");
-  const [timezone, setTimezone] = useState("utc");
-  const [theme, setTheme] = useState("dark");
-  const [telemetry, setTelemetry] = useState(true);
+  const { theme, setTheme } = useTheme();
+
+  const [email, setEmail] = useState(
+    () => localStorage.getItem("settings:email") || "admin@shieldbrain.ai"
+  );
+  const [username, setUsername] = useState(
+    () => localStorage.getItem("settings:username") || "securityadmin"
+  );
+  const [timezone, setTimezone] = useState(
+    () => localStorage.getItem("settings:timezone") || "utc"
+  );
+  const [telemetry, setTelemetry] = useState(() => {
+    const saved = localStorage.getItem("settings:telemetry");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  const handleSave = () => {
+    localStorage.setItem("settings:email", email);
+    localStorage.setItem("settings:username", username);
+    localStorage.setItem("settings:timezone", timezone);
+    localStorage.setItem("settings:telemetry", JSON.stringify(telemetry));
+    toast.success("Settings have been saved.");
+  };
 
   return (
     <Card className="border-0 shadow-lg">
@@ -75,7 +95,10 @@ export const GeneralSettings = () => {
         </div>
         
         <div className="pt-4">
-          <Button className="bg-security-blue hover:bg-security-blue/80">
+          <Button
+            className="bg-security-blue hover:bg-security-blue/80"
+            onClick={handleSave}
+          >
             Save Changes
           </Button>
         </div>
