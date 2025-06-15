@@ -43,30 +43,6 @@ const Auth = () => {
     setIsSubmitting(false);
   };
 
-  const handleSignUp = async () => {
-    setIsSubmitting(true);
-    const { error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo: window.location.origin,
-      },
-    });
-    if (error) {
-      toast({
-        title: 'Error signing up',
-        description: error.message,
-        variant: 'destructive',
-      });
-    } else {
-      toast({
-        title: 'Sign up successful!',
-        description: 'Please check your email to confirm your account.',
-      });
-    }
-    setIsSubmitting(false);
-  };
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-security-navy">
       <Card className="w-full max-w-sm bg-security-dark-navy text-white border-security-teal">
@@ -103,12 +79,9 @@ const Auth = () => {
               />
             </div>
           </div>
-          <div className="mt-6 flex flex-col space-y-2">
+          <div className="mt-6">
             <Button onClick={handleLogin} disabled={isSubmitting || !email || !password} className="w-full bg-security-teal hover:bg-security-teal/90 text-white">
               {isSubmitting ? 'Signing In...' : 'Sign In'}
-            </Button>
-            <Button onClick={handleSignUp} disabled={isSubmitting || !email || !password} variant="outline" className="w-full border-security-teal text-security-teal hover:bg-security-teal hover:text-white">
-              {isSubmitting ? 'Signing Up...' : 'Sign Up'}
             </Button>
           </div>
         </CardContent>
