@@ -57,6 +57,28 @@ const getHealth = (status: string) => {
   return 20;
 }
 
+const getSyncRate = (type: string) => {
+  switch (type) {
+    case 'File Upload':
+      return 'One-time';
+    case 'API Gateway':
+    case 'Network Monitoring':
+    case 'Payment Processor':
+    case 'Transaction Data':
+      return 'Real-time';
+    case 'E-commerce Transactions':
+    case 'Cloud Security Logs':
+    case 'Security Logs':
+      return 'Continuous';
+    case 'Custom Database':
+    case 'Customer Profiles':
+    case 'User Data':
+      return 'On-demand';
+    default:
+      return 'N/A';
+  }
+};
+
 interface DataSourceCardProps {
   source: SupabaseDataSource;
   onDelete: (id: string) => void;
@@ -64,10 +86,12 @@ interface DataSourceCardProps {
 
 export const DataSourceCard = ({ source, onDelete }: DataSourceCardProps) => {
   const health = getHealth(source.status);
-  const fileMeta = source.file_metadata as { size?: number } | null;
+  const fileMeta = source.file_metadata as { size?: number; record_count?: number } | null;
   const sizeDisplay = (source.type === 'File Upload' && fileMeta?.size)
     ? `${(fileMeta.size / 1024).toFixed(2)} KB`
     : 'N/A';
+  const recordsDisplay = fileMeta?.record_count ? fileMeta.record_count.toLocaleString() : 'N/A';
+  const syncRate = getSyncRate(source.type);
 
   return (
     <Card key={source.id} className="border-0 shadow-lg overflow-hidden">
@@ -131,11 +155,11 @@ export const DataSourceCard = ({ source, onDelete }: DataSourceCardProps) => {
           </div>
           <div>
             <p className="text-sm text-gray-400">Sync Rate</p>
-            <p className="text-sm font-medium">Real-time</p>
+            <p className="text-sm font-medium">{syncRate}</p>
           </div>
           <div>
             <p className="text-sm text-gray-400">Records</p>
-            <p className="text-sm font-medium">N/A</p>
+            <p className="text-sm font-medium">{recordsDisplay}</p>
           </div>
           <div>
             <p className="text-sm text-gray-400">Size</p>
@@ -173,3 +197,4 @@ export const DataSourceCard = ({ source, onDelete }: DataSourceCardProps) => {
     </Card>
   );
 };
+
