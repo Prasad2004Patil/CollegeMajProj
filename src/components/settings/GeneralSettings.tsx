@@ -33,6 +33,7 @@ export const GeneralSettings = () => {
     localStorage.setItem("settings:timezone", timezone);
     localStorage.setItem("settings:telemetry", JSON.stringify(telemetry));
     toast.success("Settings have been saved.");
+    window.dispatchEvent(new Event("settings-updated"));
   };
 
   return (

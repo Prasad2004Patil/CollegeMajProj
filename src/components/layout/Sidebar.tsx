@@ -1,5 +1,5 @@
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -22,7 +22,31 @@ type NavItem = {
 export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  
+  const [email, setEmail] = useState(() => localStorage.getItem("settings:email") || "admin@shieldbrain.ai");
+  const [username, setUsername] = useState(() => localStorage.getItem("settings:username") || "securityadmin");
+
+  useEffect(() => {
+    const handleSettingsUpdate = () => {
+      setEmail(localStorage.getItem("settings:email") || "admin@shieldbrain.ai");
+      setUsername(localStorage.getItem("settings:username") || "securityadmin");
+    };
+
+    window.addEventListener("settings-updated", handleSettingsUpdate);
+
+    return () => {
+      window.removeEventListener("settings-updated", handleSettingsUpdate);
+    };
+  }, []);
+
+  const getInitials = (name: string) => {
+    if (!name) return "SA";
+    const nameParts = name.split(" ");
+    if (nameParts.length > 1) {
+      return (nameParts[0][0] + (nameParts[1][0] || "")).toUpperCase();
+    }
+    return name.slice(0, 2).toUpperCase();
+  };
+
   const navItems: NavItem[] = [
     {
       title: "Dashboard",
@@ -99,11 +123,11 @@ export function Sidebar() {
           <div className="p-4 border-t border-security-blue/20">
             <div className="flex items-center gap-3 px-3 py-2">
               <div className="w-8 h-8 rounded-full bg-security-blue/20 flex items-center justify-center text-security-blue">
-                <span className="font-semibold">SB</span>
+                <span className="font-semibold">{getInitials(username)}</span>
               </div>
               <div>
-                <p className="text-sm font-medium text-white">Security Admin</p>
-                <p className="text-xs text-gray-400">admin@shieldbrain.ai</p>
+                <p className="text-sm font-medium text-white capitalize">{username}</p>
+                <p className="text-xs text-gray-400">{email}</p>
               </div>
             </div>
           </div>
