@@ -1,4 +1,3 @@
-
 import { Layout } from "@/components/layout/Layout";
 import { PageContainer } from "@/components/layout/PageContainer";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -11,8 +10,53 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
 import { Shield, Bell, Lock, RefreshCw, Server, Key } from "lucide-react";
+import { useState } from "react";
 
 const Settings = () => {
+  // General Settings State
+  const [email, setEmail] = useState("admin@shieldbrain.ai");
+  const [username, setUsername] = useState("securityadmin");
+  const [timezone, setTimezone] = useState("utc");
+  const [theme, setTheme] = useState("dark");
+  const [telemetry, setTelemetry] = useState(true);
+
+  // Notification Settings State
+  const [criticalEmail, setCriticalEmail] = useState(true);
+  const [criticalSms, setCriticalSms] = useState(true);
+  const [criticalPush, setCriticalPush] = useState(true);
+  const [highEmail, setHighEmail] = useState(true);
+  const [highSms, setHighSms] = useState(false);
+  const [highPush, setHighPush] = useState(true);
+  const [mediumEmail, setMediumEmail] = useState(true);
+  const [mediumSms, setMediumSms] = useState(false);
+  const [mediumPush, setMediumPush] = useState(false);
+  const [lowEmail, setLowEmail] = useState(false);
+  const [lowSms, setLowSms] = useState(false);
+  const [lowPush, setLowPush] = useState(false);
+  const [reportFrequency, setReportFrequency] = useState("daily");
+  const [reportFormat, setReportFormat] = useState("pdf");
+
+  // Security Settings State
+  const [twoFactorAuth, setTwoFactorAuth] = useState(true);
+  const [sessionTimeout, setSessionTimeout] = useState([30]);
+  const [hybridEncryption, setHybridEncryption] = useState(true);
+  const [symmetricAlgorithm, setSymmetricAlgorithm] = useState("aes-256");
+  const [keyRotationPeriod, setKeyRotationPeriod] = useState("30days");
+  const [apiKey, setApiKey] = useState("sk_live_51ABcDeFgHiJkLmNo7PqRsTuV....");
+  const [apiRateLimiting, setApiRateLimiting] = useState(true);
+  const [rateLimit, setRateLimit] = useState([100]);
+
+  // AI Model Settings State
+  const [cloudPlatform, setCloudPlatform] = useState("aws");
+  const [computeType, setComputeType] = useState("gpu");
+  const [instanceSize, setInstanceSize] = useState("medium");
+  const [gnnLayers, setGnnLayers] = useState([3]);
+  const [gnnThreshold, setGnnThreshold] = useState([0.75]);
+  const [realtimeGraphUpdates, setRealtimeGraphUpdates] = useState(true);
+  const [sequenceLength, setSequenceLength] = useState([128]);
+  const [lstmUnits, setLstmUnits] = useState([256]);
+  const [predictionWindow, setPredictionWindow] = useState([15]);
+
   return (
     <Layout>
       <PageContainer
@@ -36,19 +80,19 @@ const Settings = () => {
               <CardContent className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="email">Email Address</Label>
-                  <Input id="email" defaultValue="admin@shieldbrain.ai" />
+                  <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
                 </div>
                 
                 <div className="space-y-2">
                   <Label htmlFor="username">Username</Label>
-                  <Input id="username" defaultValue="securityadmin" />
+                  <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} />
                 </div>
                 
                 <Separator className="my-6" />
                 
                 <div className="space-y-2">
                   <Label htmlFor="timezone">Timezone</Label>
-                  <Select defaultValue="utc">
+                  <Select value={timezone} onValueChange={setTimezone}>
                     <SelectTrigger id="timezone">
                       <SelectValue placeholder="Select timezone" />
                     </SelectTrigger>
@@ -64,7 +108,7 @@ const Settings = () => {
                 
                 <div className="space-y-2">
                   <Label htmlFor="theme">Theme</Label>
-                  <Select defaultValue="dark">
+                  <Select value={theme} onValueChange={setTheme}>
                     <SelectTrigger id="theme">
                       <SelectValue placeholder="Select theme" />
                     </SelectTrigger>
@@ -83,7 +127,7 @@ const Settings = () => {
                       Help improve the product by sharing anonymous usage data
                     </p>
                   </div>
-                  <Switch id="telemetry" defaultChecked />
+                  <Switch id="telemetry" checked={telemetry} onCheckedChange={setTelemetry} />
                 </div>
                 
                 <div className="pt-4">
@@ -118,15 +162,15 @@ const Settings = () => {
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                          <Switch id="critical-email" defaultChecked />
+                          <Switch id="critical-email" checked={criticalEmail} onCheckedChange={setCriticalEmail} />
                           <Label htmlFor="critical-email" className="text-sm">Email</Label>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Switch id="critical-sms" defaultChecked />
+                          <Switch id="critical-sms" checked={criticalSms} onCheckedChange={setCriticalSms} />
                           <Label htmlFor="critical-sms" className="text-sm">SMS</Label>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Switch id="critical-push" defaultChecked />
+                          <Switch id="critical-push" checked={criticalPush} onCheckedChange={setCriticalPush} />
                           <Label htmlFor="critical-push" className="text-sm">Push</Label>
                         </div>
                       </div>
@@ -141,15 +185,15 @@ const Settings = () => {
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                          <Switch id="high-email" defaultChecked />
+                          <Switch id="high-email" checked={highEmail} onCheckedChange={setHighEmail} />
                           <Label htmlFor="high-email" className="text-sm">Email</Label>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Switch id="high-sms" />
+                          <Switch id="high-sms" checked={highSms} onCheckedChange={setHighSms} />
                           <Label htmlFor="high-sms" className="text-sm">SMS</Label>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Switch id="high-push" defaultChecked />
+                          <Switch id="high-push" checked={highPush} onCheckedChange={setHighPush} />
                           <Label htmlFor="high-push" className="text-sm">Push</Label>
                         </div>
                       </div>
@@ -164,15 +208,15 @@ const Settings = () => {
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                          <Switch id="medium-email" defaultChecked />
+                          <Switch id="medium-email" checked={mediumEmail} onCheckedChange={setMediumEmail} />
                           <Label htmlFor="medium-email" className="text-sm">Email</Label>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Switch id="medium-sms" />
+                          <Switch id="medium-sms" checked={mediumSms} onCheckedChange={setMediumSms} />
                           <Label htmlFor="medium-sms" className="text-sm">SMS</Label>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Switch id="medium-push" />
+                          <Switch id="medium-push" checked={mediumPush} onCheckedChange={setMediumPush} />
                           <Label htmlFor="medium-push" className="text-sm">Push</Label>
                         </div>
                       </div>
@@ -187,15 +231,15 @@ const Settings = () => {
                       </div>
                       <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                          <Switch id="low-email" />
+                          <Switch id="low-email" checked={lowEmail} onCheckedChange={setLowEmail} />
                           <Label htmlFor="low-email" className="text-sm">Email</Label>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Switch id="low-sms" />
+                          <Switch id="low-sms" checked={lowSms} onCheckedChange={setLowSms} />
                           <Label htmlFor="low-sms" className="text-sm">SMS</Label>
                         </div>
                         <div className="flex items-center gap-2">
-                          <Switch id="low-push" />
+                          <Switch id="low-push" checked={lowPush} onCheckedChange={setLowPush} />
                           <Label htmlFor="low-push" className="text-sm">Push</Label>
                         </div>
                       </div>
@@ -215,7 +259,7 @@ const Settings = () => {
                     <div className="grid grid-cols-2 gap-4">
                       <div className="space-y-2">
                         <Label htmlFor="report-frequency">Report Frequency</Label>
-                        <Select defaultValue="daily">
+                        <Select value={reportFrequency} onValueChange={setReportFrequency}>
                           <SelectTrigger id="report-frequency">
                             <SelectValue placeholder="Select frequency" />
                           </SelectTrigger>
@@ -229,7 +273,7 @@ const Settings = () => {
                       
                       <div className="space-y-2">
                         <Label htmlFor="report-format">Report Format</Label>
-                        <Select defaultValue="pdf">
+                        <Select value={reportFormat} onValueChange={setReportFormat}>
                           <SelectTrigger id="report-format">
                             <SelectValue placeholder="Select format" />
                           </SelectTrigger>
@@ -273,7 +317,7 @@ const Settings = () => {
                         Require 2FA for all account logins
                       </p>
                     </div>
-                    <Switch defaultChecked />
+                    <Switch checked={twoFactorAuth} onCheckedChange={setTwoFactorAuth} />
                   </div>
                   
                   <div className="space-y-2">
@@ -281,12 +325,13 @@ const Settings = () => {
                     <div className="flex items-center gap-4">
                       <Slider
                         id="session-timeout"
-                        defaultValue={[30]}
+                        value={sessionTimeout}
+                        onValueChange={setSessionTimeout}
                         max={120}
                         step={5}
                         className="w-[300px]"
                       />
-                      <span className="text-sm font-medium">30 min</span>
+                      <span className="text-sm font-medium">{sessionTimeout[0]} min</span>
                     </div>
                   </div>
                 </div>
@@ -307,12 +352,12 @@ const Settings = () => {
                           Use RSA + AES for enhanced security
                         </p>
                       </div>
-                      <Switch defaultChecked />
+                      <Switch checked={hybridEncryption} onCheckedChange={setHybridEncryption} />
                     </div>
                     
                     <div className="space-y-2">
                       <Label htmlFor="encryption-method">Symmetric Algorithm</Label>
-                      <Select defaultValue="aes-256">
+                      <Select value={symmetricAlgorithm} onValueChange={setSymmetricAlgorithm}>
                         <SelectTrigger id="encryption-method">
                           <SelectValue placeholder="Select algorithm" />
                         </SelectTrigger>
@@ -326,7 +371,7 @@ const Settings = () => {
                     
                     <div className="space-y-2">
                       <Label htmlFor="key-rotation">Key Rotation Period</Label>
-                      <Select defaultValue="30days">
+                      <Select value={keyRotationPeriod} onValueChange={setKeyRotationPeriod}>
                         <SelectTrigger id="key-rotation">
                           <SelectValue placeholder="Select period" />
                         </SelectTrigger>
@@ -354,11 +399,11 @@ const Settings = () => {
                     <div className="flex gap-2">
                       <Input 
                         id="api-key" 
-                        value="sk_live_51ABcDeFgHiJkLmNo7PqRsTuV...." 
+                        value={apiKey} 
                         readOnly 
                         className="font-mono text-xs"
                       />
-                      <Button variant="outline" className="shrink-0">
+                      <Button variant="outline" className="shrink-0" onClick={() => setApiKey('sk_live_' + Math.random().toString(36).substring(2))}>
                         Regenerate
                       </Button>
                     </div>
@@ -374,7 +419,7 @@ const Settings = () => {
                         Limit API requests to prevent abuse
                       </p>
                     </div>
-                    <Switch defaultChecked />
+                    <Switch checked={apiRateLimiting} onCheckedChange={setApiRateLimiting} />
                   </div>
                   
                   <div className="space-y-2">
@@ -382,12 +427,13 @@ const Settings = () => {
                     <div className="flex items-center gap-4">
                       <Slider
                         id="rate-limit"
-                        defaultValue={[100]}
+                        value={rateLimit}
+                        onValueChange={setRateLimit}
                         max={500}
                         step={10}
                         className="w-[300px]"
                       />
-                      <span className="text-sm font-medium">100</span>
+                      <span className="text-sm font-medium">{rateLimit[0]}</span>
                     </div>
                   </div>
                 </div>
@@ -416,7 +462,7 @@ const Settings = () => {
                   
                   <div className="space-y-2">
                     <Label htmlFor="cloud-platform">Cloud Platform</Label>
-                    <Select defaultValue="aws">
+                    <Select value={cloudPlatform} onValueChange={setCloudPlatform}>
                       <SelectTrigger id="cloud-platform">
                         <SelectValue placeholder="Select platform" />
                       </SelectTrigger>
@@ -430,7 +476,7 @@ const Settings = () => {
                   
                   <div className="space-y-2">
                     <Label htmlFor="compute-type">Compute Type</Label>
-                    <Select defaultValue="gpu">
+                    <Select value={computeType} onValueChange={setComputeType}>
                       <SelectTrigger id="compute-type">
                         <SelectValue placeholder="Select compute type" />
                       </SelectTrigger>
@@ -443,7 +489,7 @@ const Settings = () => {
                   
                   <div className="space-y-2">
                     <Label htmlFor="instance-size">Instance Size</Label>
-                    <Select defaultValue="medium">
+                    <Select value={instanceSize} onValueChange={setInstanceSize}>
                       <SelectTrigger id="instance-size">
                         <SelectValue placeholder="Select size" />
                       </SelectTrigger>
@@ -467,12 +513,13 @@ const Settings = () => {
                     <div className="flex items-center gap-4">
                       <Slider
                         id="gnn-layers"
-                        defaultValue={[3]}
+                        value={gnnLayers}
+                        onValueChange={setGnnLayers}
                         max={6}
                         step={1}
                         className="w-[300px]"
                       />
-                      <span className="text-sm font-medium">3</span>
+                      <span className="text-sm font-medium">{gnnLayers[0]}</span>
                     </div>
                   </div>
                   
@@ -481,13 +528,14 @@ const Settings = () => {
                     <div className="flex items-center gap-4">
                       <Slider
                         id="gnn-threshold"
-                        defaultValue={[0.75]}
+                        value={gnnThreshold}
+                        onValueChange={setGnnThreshold}
                         min={0.5}
                         max={0.99}
                         step={0.01}
                         className="w-[300px]"
                       />
-                      <span className="text-sm font-medium">0.75</span>
+                      <span className="text-sm font-medium">{gnnThreshold[0]}</span>
                     </div>
                   </div>
                   
@@ -498,7 +546,7 @@ const Settings = () => {
                         Update graph structure in real-time
                       </p>
                     </div>
-                    <Switch defaultChecked />
+                    <Switch checked={realtimeGraphUpdates} onCheckedChange={setRealtimeGraphUpdates} />
                   </div>
                 </div>
                 
@@ -512,13 +560,14 @@ const Settings = () => {
                     <div className="flex items-center gap-4">
                       <Slider
                         id="sequence-length"
-                        defaultValue={[128]}
+                        value={sequenceLength}
+                        onValueChange={setSequenceLength}
                         min={32}
                         max={512}
                         step={32}
                         className="w-[300px]"
                       />
-                      <span className="text-sm font-medium">128</span>
+                      <span className="text-sm font-medium">{sequenceLength[0]}</span>
                     </div>
                   </div>
                   
@@ -527,13 +576,14 @@ const Settings = () => {
                     <div className="flex items-center gap-4">
                       <Slider
                         id="lstm-units"
-                        defaultValue={[256]}
+                        value={lstmUnits}
+                        onValueChange={setLstmUnits}
                         min={64}
                         max={512}
                         step={64}
                         className="w-[300px]"
                       />
-                      <span className="text-sm font-medium">256</span>
+                      <span className="text-sm font-medium">{lstmUnits[0]}</span>
                     </div>
                   </div>
                   
@@ -542,13 +592,14 @@ const Settings = () => {
                     <div className="flex items-center gap-4">
                       <Slider
                         id="prediction-window"
-                        defaultValue={[15]}
+                        value={predictionWindow}
+                        onValueChange={setPredictionWindow}
                         min={5}
                         max={60}
                         step={5}
                         className="w-[300px]"
                       />
-                      <span className="text-sm font-medium">15</span>
+                      <span className="text-sm font-medium">{predictionWindow[0]}</span>
                     </div>
                   </div>
                 </div>
