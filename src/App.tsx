@@ -8,6 +8,7 @@ import Index from "./pages/Index";
 import Transactions from "./pages/Transactions";
 import Anomalies from "./pages/Anomalies";
 import DataSources from "./pages/DataSources";
+import DataSourceDetails from "./pages/DataSourceDetails";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import { ThemeProvider } from "next-themes";
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/anomalies" element={<Anomalies />} />
             <Route path="/data-sources" element={<DataSources />} />
+            <Route path="/data-sources/:id" element={<DataSourceDetails />} />
             <Route path="/settings" element={<Settings />} />
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

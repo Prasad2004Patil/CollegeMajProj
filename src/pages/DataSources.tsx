@@ -5,12 +5,25 @@ import { Card, CardContent, CardHeader, CardTitle, CardFooter } from "@/componen
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle, AlertCircle, Database, ShoppingCart, Lock, Network, Server, Activity, Users } from "lucide-react";
-import { useQuery } from "@tanstack/react-query";
+import { CheckCircle, AlertCircle, Database, ShoppingCart, Lock, Network, Server, Activity, Users, Trash2 } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDistanceToNow } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 import { AddDataSourceButton } from "@/components/data-sources/AddDataSourceButton";
+import { Link } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { toast } from "@/hooks/use-toast";
 
 const getIconForType = (type: string) => {
     switch(type) {
@@ -42,6 +55,7 @@ const getHealth = (status: string) => {
 }
 
 const DataSources = () => {
+  const queryClient = useQueryClient();
   const { data: dataSources, isLoading } = useQuery({
     queryKey: ['data_sources'],
     queryFn: async () => {
@@ -51,6 +65,29 @@ const DataSources = () => {
         .order('created_at', { ascending: false });
       if (error) throw new Error(error.message);
       return data;
+    },
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("data_sources").delete().eq("id", id);
+      if (error) {
+        throw error;
+      }
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["data_sources"] });
+      toast({
+        title: "Success",
+        description: "Data source deleted successfully.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error deleting data source",
+        description: error.message,
+        variant: "destructive",
+      });
     },
   });
 
@@ -99,21 +136,47 @@ const DataSources = () => {
                       <p className="text-sm text-gray-400">{source.type}</p>
                     </div>
                   </div>
-                  <Badge
-                    variant="outline"
-                    className={
-                      source.status === "connected"
-                        ? "border-green-500 text-green-500 flex items-center gap-1"
-                        : source.status === "warning"
-                          ? "border-security-amber text-security-amber flex items-center gap-1"
-                          : "border-security-alert text-security-alert flex items-center gap-1"
-                    }
-                  >
-                    {source.status === "connected" && <CheckCircle className="h-3 w-3" />}
-                    {source.status === "warning" && <AlertCircle className="h-3 w-3" />}
-                    {source.status === "error" && <AlertCircle className="h-3 w-3" />}
-                    {source.status}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    <Badge
+                      variant="outline"
+                      className={
+                        source.status === "connected"
+                          ? "border-green-500 text-green-500 flex items-center gap-1"
+                          : source.status === "warning"
+                            ? "border-security-amber text-security-amber flex items-center gap-1"
+                            : "border-security-alert text-security-alert flex items-center gap-1"
+                      }
+                    >
+                      {source.status === "connected" && <CheckCircle className="h-3 w-3" />}
+                      {source.status === "warning" && <AlertCircle className="h-3 w-3" />}
+                      {source.status === "error" && <AlertCircle className="h-3 w-3" />}
+                      {source.status}
+                    </Badge>
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="icon" className="text-gray-400 hover:text-security-alert hover:bg-security-alert/10 h-8 w-8">
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="bg-security-navy border-security-blue/20">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="text-white">Are you absolutely sure?</AlertDialogTitle>
+                          <AlertDialogDescription className="text-gray-400">
+                            This action cannot be undone. This will permanently delete this data source.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancel</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => deleteMutation.mutate(source.id)}
+                            className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </CardHeader>
                 <CardContent className="pb-0">
                   <div className="grid grid-cols-2 gap-4 mb-4">
@@ -154,11 +217,12 @@ const DataSources = () => {
                 </CardContent>
                 <CardFooter className="pt-0">
                   <Button 
+                    asChild
                     variant="outline" 
                     size="sm" 
                     className="text-security-blue border-security-blue/20 hover:bg-security-blue/10 w-full"
                   >
-                    View Details
+                    <Link to={`/data-sources/${source.id}`}>View Details</Link>
                   </Button>
                 </CardFooter>
               </Card>
