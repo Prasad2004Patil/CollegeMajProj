@@ -60,6 +60,7 @@ export type Database = {
       data_sources: {
         Row: {
           created_at: string
+          file_metadata: Json | null
           id: string
           last_synced_at: string | null
           name: string
@@ -68,6 +69,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          file_metadata?: Json | null
           id?: string
           last_synced_at?: string | null
           name: string
@@ -76,6 +78,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          file_metadata?: Json | null
           id?: string
           last_synced_at?: string | null
           name?: string

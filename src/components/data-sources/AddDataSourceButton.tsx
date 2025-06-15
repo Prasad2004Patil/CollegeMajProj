@@ -44,11 +44,13 @@ const dataSourceTypes = [
   "User Data",
   "Payment Processor",
   "Custom Database",
+  "File Upload",
 ];
 
 const formSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters long." }),
   type: z.string({ required_error: "Please select a data source type." }),
+  file: z.any().optional(),
 });
 
 export function AddDataSourceButton() {
@@ -63,14 +65,37 @@ export function AddDataSourceButton() {
   });
 
   const { isSubmitting } = form.formState;
+  const watchedType = form.watch("type");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
+      let file_metadata = null;
+      if (values.type === "File Upload" && values.file) {
+        const file = values.file;
+        const filePath = `public/${Date.now()}-${file.name}`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("data_source_files")
+          .upload(filePath, file);
+
+        if (uploadError) {
+          throw uploadError;
+        }
+
+        file_metadata = {
+          name: file.name,
+          size: file.size,
+          type: file.type,
+          path: filePath,
+        };
+      }
+
       const { error } = await supabase.from("data_sources").insert([
         {
           name: values.name,
           type: values.type,
           status: "connected",
+          file_metadata,
         },
       ]);
 
@@ -156,6 +181,26 @@ export function AddDataSourceButton() {
                 </FormItem>
               )}
             />
+            {watchedType === "File Upload" && (
+              <FormField
+                control={form.control}
+                name="file"
+                render={({ field: { onChange, value, ...rest } }) => (
+                  <FormItem>
+                    <FormLabel className="text-gray-300">Data File</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="file"
+                        onChange={(e) => onChange(e.target.files?.[0])}
+                        {...rest}
+                        className="bg-security-navy-deep border-security-blue/30 text-white"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            )}
             <DialogFooter>
               <Button type="submit" disabled={isSubmitting} className="bg-security-blue hover:bg-security-blue/90 text-white">
                 {isSubmitting ? "Saving..." : "Save changes"}

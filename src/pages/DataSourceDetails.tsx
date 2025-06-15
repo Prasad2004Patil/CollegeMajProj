@@ -8,7 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import { Terminal, ArrowLeft } from "lucide-react";
+import { Terminal, ArrowLeft, Download } from "lucide-react";
 
 const DataSourceDetails = () => {
   const { id } = useParams<{ id: string }>();
@@ -68,6 +68,52 @@ const DataSourceDetails = () => {
             </div>
         </div>
       );
+    }
+
+    if (dataSource.type === 'File Upload') {
+        const fileMeta = dataSource.file_metadata as { name: string; size: number; type: string; path: string; } | null;
+
+        if (!fileMeta) {
+            return <p className="text-gray-400">No file information available for this data source.</p>;
+        }
+
+        const { data: publicUrlData } = supabase.storage.from('data_source_files').getPublicUrl(fileMeta.path);
+
+        return (
+            <div className="space-y-4">
+                <div>
+                    <h3 className="text-lg font-semibold mb-2 text-white">Connection Details</h3>
+                    <Card className="bg-security-navy-deep border-security-blue/20">
+                        <CardContent className="pt-6 grid grid-cols-1 md:grid-cols-3 gap-4 text-gray-300">
+                            <div><strong className="font-medium text-white">Name:</strong> {dataSource.name}</div>
+                            <div><strong className="font-medium text-white">Type:</strong> {dataSource.type}</div>
+                            <div><strong className="font-medium text-white">Status:</strong> {dataSource.status}</div>
+                        </CardContent>
+                    </Card>
+                </div>
+                <div>
+                    <h3 className="text-lg font-semibold mb-2 text-white">File Details</h3>
+                    <Card className="bg-security-navy-deep border-security-blue/20">
+                        <CardContent className="pt-6 grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-300">
+                             <div><strong className="font-medium text-white">File Name:</strong> {fileMeta.name}</div>
+                             <div><strong className="font-medium text-white">File Size:</strong> {(fileMeta.size / 1024).toFixed(2)} KB</div>
+                             <div><strong className="font-medium text-white">File Type:</strong> {fileMeta.type}</div>
+                             {publicUrlData?.publicUrl && (
+                                <div>
+                                    <strong className="font-medium text-white">Download:</strong>{' '}
+                                    <Button asChild variant="link" className="p-0 h-auto text-security-blue hover:text-security-blue/80">
+                                        <a href={publicUrlData.publicUrl} download>
+                                            <Download className="mr-2 h-4 w-4"/>
+                                            Download File
+                                        </a>
+                                    </Button>
+                                </div>
+                             )}
+                        </CardContent>
+                    </Card>
+                </div>
+            </div>
+        );
     }
     
     return <p className="text-gray-400">A detailed view for data sources of type '{dataSource.type}' is not yet available.</p>;
