@@ -43,6 +43,7 @@ const dataSourceTypes = [
   "API Data",
   "User Data",
   "Payment Processor",
+  "Custom Database",
 ];
 
 const formSchema = z.object({

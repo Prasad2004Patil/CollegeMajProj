@@ -127,11 +127,11 @@ const DataSources = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Records</p>
-                      <p className="text-sm font-medium">1.2M</p>
+                      <p className="text-sm font-medium">N/A</p>
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Size</p>
-                      <p className="text-sm font-medium">4.8 GB</p>
+                      <p className="text-sm font-medium">N/A</p>
                     </div>
                   </div>
                   <div className="mb-4">
