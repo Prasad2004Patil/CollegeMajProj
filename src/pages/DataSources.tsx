@@ -124,6 +124,10 @@ const DataSources = () => {
           ) : (
             dataSources?.map((source) => {
               const health = getHealth(source.status);
+              const fileMeta = source.file_metadata as { size?: number } | null;
+              const sizeDisplay = (source.type === 'File Upload' && fileMeta?.size)
+                ? `${(fileMeta.size / 1024).toFixed(2)} KB`
+                : 'N/A';
               return (
               <Card key={source.id} className="border-0 shadow-lg overflow-hidden">
                 <CardHeader className="pb-2 flex flex-row items-center justify-between">
@@ -194,7 +198,7 @@ const DataSources = () => {
                     </div>
                     <div>
                       <p className="text-sm text-gray-400">Size</p>
-                      <p className="text-sm font-medium">N/A</p>
+                      <p className="text-sm font-medium">{sizeDisplay}</p>
                     </div>
                   </div>
                   <div className="mb-4">
