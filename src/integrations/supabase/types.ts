@@ -9,7 +9,171 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      [_ in never]: never
+      anomalies: {
+        Row: {
+          anomaly_type: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          risk_score: number | null
+          security_log_id: string | null
+          status: string
+          transaction_id: string | null
+        }
+        Insert: {
+          anomaly_type: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          risk_score?: number | null
+          security_log_id?: string | null
+          status?: string
+          transaction_id?: string | null
+        }
+        Update: {
+          anomaly_type?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          risk_score?: number | null
+          security_log_id?: string | null
+          status?: string
+          transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "anomalies_security_log_id_fkey"
+            columns: ["security_log_id"]
+            isOneToOne: false
+            referencedRelation: "security_logs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "anomalies_transaction_id_fkey"
+            columns: ["transaction_id"]
+            isOneToOne: false
+            referencedRelation: "transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      data_sources: {
+        Row: {
+          created_at: string
+          id: string
+          last_synced_at: string | null
+          name: string
+          status: string
+          type: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_synced_at?: string | null
+          name: string
+          status: string
+          type: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_synced_at?: string | null
+          name?: string
+          status?: string
+          type?: string
+        }
+        Relationships: []
+      }
+      security_logs: {
+        Row: {
+          created_at: string
+          details: Json | null
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string
+          customer_id: string | null
+          id: string
+          is_anomaly: boolean
+          location: Json | null
+          payment_method: string | null
+          raw_data: Json | null
+          status: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency: string
+          customer_id?: string | null
+          id?: string
+          is_anomaly?: boolean
+          location?: Json | null
+          payment_method?: string | null
+          raw_data?: Json | null
+          status: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string
+          customer_id?: string | null
+          id?: string
+          is_anomaly?: boolean
+          location?: Json | null
+          payment_method?: string | null
+          raw_data?: Json | null
+          status?: string
+        }
+        Relationships: []
+      }
+      user_activity: {
+        Row: {
+          action: string
+          admin_user_id: string
+          created_at: string
+          details: Json | null
+          id: string
+        }
+        Insert: {
+          action: string
+          admin_user_id: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+        }
+        Update: {
+          action?: string
+          admin_user_id?: string
+          created_at?: string
+          details?: Json | null
+          id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
