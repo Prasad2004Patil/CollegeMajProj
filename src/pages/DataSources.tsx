@@ -10,15 +10,15 @@ import { DataSourceCardSkeleton } from "@/components/data-sources/DataSourceCard
 
 const DataSources = () => {
   const queryClient = useQueryClient();
-  const { data: dataSources, isLoading } = useQuery<SupabaseDataSource[]>({
+  const { data: dataSources, isLoading } = useQuery({
     queryKey: ['data_sources'],
-    queryFn: async () => {
+    queryFn: async (): Promise<SupabaseDataSource[]> => {
       const { data, error } = await supabase
         .from('data_sources')
         .select('*')
         .order('created_at', { ascending: false });
       if (error) throw new Error(error.message);
-      return data;
+      return data as SupabaseDataSource[];
     },
   });
 
