@@ -90,13 +90,24 @@ const Transactions = () => {
                   ) : (
                     transactions?.map((tx) => {
                       const riskScore = riskScoresByTxId.get(tx.id) || 0;
+                      
+                      let locationDisplay = 'N/A';
+                      const location = tx.location;
+                      if (location && typeof location === 'object' && !Array.isArray(location)) {
+                        const loc = location as { city?: string; country?: string };
+                        const parts = [loc.city, loc.country].filter(Boolean);
+                        if (parts.length > 0) {
+                          locationDisplay = parts.join(', ');
+                        }
+                      }
+
                       return (
                         <TableRow key={tx.id} className="data-grid-cell">
                           <TableCell className="font-mono">{tx.id.substring(0, 8)}...</TableCell>
                           <TableCell>{format(new Date(tx.created_at), "yyyy-MM-dd HH:mm:ss")}</TableCell>
                           <TableCell>{new Intl.NumberFormat('en-US', { style: 'currency', currency: tx.currency }).format(tx.amount)}</TableCell>
                           <TableCell>{tx.customer_id}</TableCell>
-                          <TableCell>{tx.location ? `${tx.location.city || ''}, ${tx.location.country || ''}` : 'N/A'}</TableCell>
+                          <TableCell>{locationDisplay}</TableCell>
                           <TableCell>
                             <Badge 
                               variant="outline"
