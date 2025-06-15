@@ -8,7 +8,7 @@ type LayoutProps = {
 
 export function Layout({ children }: LayoutProps) {
   return (
-    <div className="min-h-screen bg-security-navy text-white">
+    <div className="min-h-screen bg-background text-foreground">
       <Sidebar />
       <div className="md:ml-64 relative">
         {children}
