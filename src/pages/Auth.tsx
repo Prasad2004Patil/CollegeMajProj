@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { Shield } from 'lucide-react';
 import { useAuth } from '@/auth/AuthProvider';
@@ -51,7 +51,6 @@ const Auth = () => {
              <Shield className="h-12 w-12 text-security-teal" />
           </div>
           <CardTitle className="text-2xl">ShieldBrain</CardTitle>
-          <CardDescription className="text-gray-400">Secure Access to Your Dashboard</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
